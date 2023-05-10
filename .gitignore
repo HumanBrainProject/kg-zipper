@@ -1,0 +1,8 @@
+**/*.iml
+.tmp
+.DS_Store
+.vscode
+.idea/
+.cache
+.env
+/service/.bsp
