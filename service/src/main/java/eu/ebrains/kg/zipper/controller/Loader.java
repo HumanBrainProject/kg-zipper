@@ -44,7 +44,7 @@ public abstract class Loader {
                 DataBufferUtils.write(dataBufferFlux, zipOutputStream).map(DataBufferUtils::release).blockLast();
                 logger.info("Downloaded {}", fileReference.getUrl());
                 isSuccess = true;
-            } catch (RuntimeException exc) { // DataBufferUtils.blockLast throws ClientAbortException, SocketTimeoutException, IOException but as RuntimeException. Not ideal but works
+            } catch (RuntimeException exc) { // DataBufferUtils.blockLast throws ClientAbortException, SocketTimeoutException, IOException but as RuntimeException. Not ideal but it works.
                 Thread.sleep(2000);
                 maxRetries--;
                 logger.info(String.format("Was not able to zip %s. Remaining retries: %d", container.getUrl(), maxRetries), exc);
