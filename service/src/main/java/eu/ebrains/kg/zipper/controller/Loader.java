@@ -33,11 +33,14 @@ public abstract class Loader {
         if (fileReference.isIgnore()) {
             return false;
         }
-        int maxRetries = 3;
+        int maxRetries = 1;
         boolean isSuccess = false;
 
-        zipOutputStream.putNextEntry(new ZipEntry(fileReference.getRelativeFilePath(container)));
+        String filename = removeQueryParameters(fileReference.getRelativeFilePath(container));
+
+        zipOutputStream.putNextEntry(new ZipEntry(filename));
         URI encodedUrl = getEncodedURI(fileReference.getUrl());
+
         while (maxRetries > 0 && !isSuccess) {
             try {
                 final Flux<DataBuffer> dataBufferFlux = getDataBufferFlux(encodedUrl, container.getBearerToken());
@@ -52,15 +55,35 @@ public abstract class Loader {
                     throw exc;
                 }
             }
-
         }
         return isSuccess;
     }
 
+    public static String removeQueryParameters(String url) {
+        int questionMarkIndex = url.indexOf("?");
+        return questionMarkIndex == -1 ? url : url.substring(0, questionMarkIndex);
+    }
+
     abstract protected Flux<DataBuffer> getDataBufferFlux(URI encodedUrl, Optional<String> token) throws URISyntaxException, MalformedURLException;
 
-    protected URI getEncodedURI(String decodedUrl) {
-        return UriComponentsBuilder.fromHttpUrl(decodedUrl).build().encode(StandardCharsets.UTF_8).toUri();
+    protected URI getEncodedURI(String url) {
+        // Essayer de décoder l'URL
+        String decodedUrl;
+        try {
+            decodedUrl = URLDecoder.decode(url, StandardCharsets.UTF_8.toString());
+        } catch (Exception e) {
+            // Si le décodage échoue, considérer que l'URL n'était pas encodée
+            decodedUrl = url;
+        }
+
+        // Si l'URL décodée est la même que l'originale, cela signifie qu'elle n'était pas encodée
+        if (decodedUrl.equals(url)) {
+            // Encoder l'URL
+            return UriComponentsBuilder.fromHttpUrl(decodedUrl).build().encode(StandardCharsets.UTF_8).toUri();
+        } else {
+            // Si l'URL était déjà encodée, la retourner telle quelle
+            return URI.create(url);
+        }
     }
 
 }

@@ -71,7 +71,7 @@ public class ZipperAPI {
             Pattern pattern = Pattern.compile("^https:\\/\\/data-proxy(-dev|-int|-ppd)?\\.ebrains\\.eu", Pattern.CASE_INSENSITIVE);
             Matcher matcher = pattern.matcher(decodeContainerUrl);
             boolean matchFound = matcher.find();
-            if (matchFound) {
+            if (matchFound || decodeContainerUrl.startsWith("http://localhost:3000")) {
                 DataProxyContainer container = new DataProxyContainer(decodeContainerUrl, bearerToken);
                 tryToZip(response, container, this.dataProxyLoader);
             } else if (decodeContainerUrl.startsWith("https://object.cscs")) {

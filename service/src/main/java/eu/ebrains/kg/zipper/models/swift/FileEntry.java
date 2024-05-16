@@ -27,6 +27,7 @@ public class FileEntry {
     private String name;
     @JsonProperty("content_type")
     private String contentType;
+    private String storage;
 
     public Long getBytes() {
         return bytes;
@@ -53,4 +54,8 @@ public class FileEntry {
     }
 
     public static class ListOfFileEntries extends ArrayList<FileEntry> {}
+
+    public String getStorage() { return storage; }
+
+    public void setStorage(String storage) { this.storage = storage; }
 }

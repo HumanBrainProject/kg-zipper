@@ -51,7 +51,7 @@ public class DataProxyLoader extends Loader {
                 .block();
         if (dataProxyFiles != null && dataProxyFiles.getObjects() != null) {
             List<FileEntry> urls = dataProxyFiles.getObjects().stream().filter(x -> x.getBytes() > 0).collect(Collectors.toList());
-            return CollectionUtils.isEmpty(urls) ? Collections.emptyList() : urls.stream().map(u -> new FileReference(String.format("%s/%s", dataProxyContainer.getRootPath(false), u.getName()), u.getName())).collect(Collectors.toList());
+            return CollectionUtils.isEmpty(urls) ? Collections.emptyList() : urls.stream().map(u -> new FileReference(String.format("%s/%s?storage=%s", dataProxyContainer.getRootPath(false), u.getName(), u.getStorage()), u.getName())).collect(Collectors.toList());
         }
         return Collections.emptyList();
     }
@@ -59,7 +59,7 @@ public class DataProxyLoader extends Loader {
 
     @Override
     protected Flux<DataBuffer> getDataBufferFlux(URI encodedUrl, Optional<String> token) throws URISyntaxException, MalformedURLException {
-        Map response = Loader.withAuth(webClient.get().uri(new URI(String.format("%s?redirect=false", encodedUrl))), token).retrieve().bodyToMono(Map.class).block();
+        Map response = Loader.withAuth(webClient.get().uri(new URI(String.format("%s&redirect=false", encodedUrl))), token).retrieve().bodyToMono(Map.class).block();
         URI url = getEncodedURI((String) response.get("url"));
         return webClient.get().uri(url).retrieve().bodyToFlux(DataBuffer.class);
     }
