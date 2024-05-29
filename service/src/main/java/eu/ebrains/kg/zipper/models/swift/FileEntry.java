@@ -23,7 +23,7 @@ import java.util.List;
 
 public class FileEntry {
 
-    private Long bytes;
+    private Long bytes = 0L;
     private String name;
     @JsonProperty("content_type")
     private String contentType;
