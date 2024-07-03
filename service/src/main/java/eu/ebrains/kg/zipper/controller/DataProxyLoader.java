@@ -36,7 +36,7 @@ public class DataProxyLoader extends Loader {
     }
 
     public List<FileReference> getUrls(Container dataProxyContainer) {
-        logger.info(String.format("Loading urls from dataProxy with url %s", dataProxyContainer.getFileIndexUri()));
+        logger.info(String.format("Loading urls from data-proxy with url %s", dataProxyContainer.getFileIndexUri()));
         final DataProxyFiles dataProxyFiles = webClient
                 .get()
                 .uri(UriUtils.decode(dataProxyContainer.getFileIndexUri(), StandardCharsets.UTF_8))
