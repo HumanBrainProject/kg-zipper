@@ -61,9 +61,9 @@ public abstract class Loader {
 
     protected URI getEncodedURI(String decodedUrl) {
         URI uri = UriComponentsBuilder.fromHttpUrl(decodedUrl).build().encode(StandardCharsets.UTF_8).toUri();
-        if(uri.toString().contains("#")){
+        if(uri.toString().contains("#") || uri.toString().contains("?")){
             try {
-                uri = new URI(uri.toString().replace("#", "%23"));
+                uri = new URI(uri.toString().replace("#", "%23").replace("?", "%3F"));
             } catch (URISyntaxException e) {
                 // If there is really an exception (which is not to be expected) we just continue with the existing URI
             }
