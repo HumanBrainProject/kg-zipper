@@ -60,7 +60,15 @@ public abstract class Loader {
     abstract protected Flux<DataBuffer> getDataBufferFlux(URI encodedUrl, Optional<String> token) throws URISyntaxException, MalformedURLException;
 
     protected URI getEncodedURI(String decodedUrl) {
-        return UriComponentsBuilder.fromHttpUrl(decodedUrl).build().encode(StandardCharsets.UTF_8).toUri();
+        URI uri = UriComponentsBuilder.fromHttpUrl(decodedUrl).build().encode(StandardCharsets.UTF_8).toUri();
+        if(uri.toString().contains("#")){
+            try {
+                uri = new URI(uri.toString().replace("#", "%23"));
+            } catch (URISyntaxException e) {
+                // If there is really an exception (which is not to be expected) we just continue with the existing URI
+            }
+        }
+        return uri;
     }
 
 }
